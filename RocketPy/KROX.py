@@ -47,6 +47,9 @@ KRtank_flameballtime = (KRtank_fillMass - burnDuration_engine * KRmDot_engine) /
 print("going")
 
 
+#""" test code from rocktpy
+
+
 # Define fluids
 oxidizer_liq = Fluid(name="N2O_l", density=1220)
 oxidizer_gas = Fluid(name="N2O_g", density=1.9277)
@@ -60,13 +63,13 @@ tanks_shape = CylindricalTank(radius = 0.1, height = 1.2, spherical_caps = True)
 oxidizer_tank = MassFlowRateBasedTank(
     name="oxidizer tank",
     geometry=tanks_shape,
-    flux_time=5,
-    initial_liquid_mass=32,
-    initial_gas_mass=0.01,
+    flux_time=5, #flux time can be under, not over, but handles it well
+    initial_liquid_mass=10,
+    initial_gas_mass=0.02,
     liquid_mass_flow_rate_in=0,
-    liquid_mass_flow_rate_out=lambda t: 32 / 3 * exp(-0.25 * t),
+    liquid_mass_flow_rate_out=2,
     gas_mass_flow_rate_in=0,
-    gas_mass_flow_rate_out=0,
+    gas_mass_flow_rate_out=0.1,
     liquid=oxidizer_liq,
     gas=oxidizer_gas,
 )
@@ -84,17 +87,6 @@ fuel_tank = MassFlowRateBasedTank(
     liquid=fuel_liq,
     gas=fuel_gas,
 )
-
-
-
-
-
-
-
-
-
-
-
 """
 OXtank = MassFlowRateBasedTank(
     name="Liquid Oxygen Tank",
@@ -140,4 +132,4 @@ KROXengine.add_tank(tank=OXtank, position=1.0)
 KROXengine.add_tank(tank=KRtank, position=2.5)
 
 KROXengine.info()
-"""
+#"""
