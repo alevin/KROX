@@ -7,10 +7,13 @@ from rocketpy import CylindricalTank, MassFlowRateBasedTank
 
 
 #these are also used as approximatons for gas entering prop tanks
-OXmDot_engine = 1 #kg/sec
-KRmDot_engine = 0.5 #kg/sec
+OFratio_engine = 2.1
+mDot_engine = 5 #kg/sec
 
+KRmDot_engine = mDot_engine / (1 + OFratio_engine) 
+OXmDot_engine = OFratio_engine*KRmDot_engine
 
+    
 burnDuration_engine = 10 #seconds with OX running out first
 thurst_engine = units.convert_units(1200, "lb", "kg")
 dryweight_engine = units.convert_units(2, "lb", "kg")
@@ -25,10 +28,7 @@ tankLengthOX = units.convert_units(32, "in", "m")
 
 # kerosene tank parameters
 tankRadiusKR = units.convert_units(5.562/2, "in", "m")
-tankLengthKR = units.convert_units(32, "in", "m")
-
-
-
+tankLengthKR = units.convert_units(24, "in", "m")
 
 #creating tank geometry objects. standard ones here, not detailed. 
 OXtank_geometry = CylindricalTank(radius=0.1, height=2.0, spherical_caps=True)
@@ -47,7 +47,7 @@ AIR_vapour = Fluid(name="Air", density=10)              #kg/m^3 at 20C? bleh
 OXtank_fillMass = OX_liquid.density * OXtank_geometry.total_volume #assuming 100% flled initial tank
 KRtank_fillMass = KR_liquid.density * KRtank_geometry.total_volume #assuming 100% flled initial tank
 
-KRtank_flameballtime = (KRtank_fillMass - burnDuration_engine * KRmDot_engine) / KRmDot_engine #firing is OX limited. this figuring out leftover time the tank is dumping fuel
+KRtank_flameballtime = (KRtank_fillMass - (burnDuration_engine * KRmDot_engine)) / KRmDot_engine #firing is OX limited. this figuring out leftover time the tank is dumping fuel
 
 
 """ test code from rocktpy
@@ -97,11 +97,8 @@ fuel_tank = MassFlowRateBasedTank(
 # the error that was being thrown earlier was saying that the gas volume bubble wasnt matching or 
 # was significantly off from liquid volume bubble
 
-
 KR_gasMdot = KRmDot_engine * (1/KR_liquid.density) * AIR_vapour.density
 OX_gasMdot = OXmDot_engine * (1/OX_liquid.density) * AIR_vapour.density
-
-
 
 OXtank = MassFlowRateBasedTank(
     name="Liquid Oxygen Tank",
@@ -117,11 +114,13 @@ OXtank = MassFlowRateBasedTank(
     gas_mass_flow_rate_out=0,    #well. none zero due to boil off. neglected 
     discretize=100,              # i did not understand this
 )
+#print(KRtank_flameballtime)
+
 """
 KRtank = MassFlowRateBasedTank(
     name="Kerosene Tank",
     geometry=KRtank_geometry,
-    flux_time=burnDuration_engine+KRtank_flameballtime,     #how long does tank need to be worried about
+    flux_time=burnDuration_engine,     #how long does tank need to be worried about
     liquid=KR_liquid,            
     gas=AIR_vapour,              #all air
     initial_liquid_mass=KRtank_fillMass,
@@ -132,6 +131,7 @@ KRtank = MassFlowRateBasedTank(
     gas_mass_flow_rate_out=0,    #basically 0. 
     discretize=100,              # i did not understand this
 )
+
 
 KROXengine = LiquidMotor(
     coordinate_system_orientation="nozzle_to_combustion_chamber", #positive torwards to combustion chamber
