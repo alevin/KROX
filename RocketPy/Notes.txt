@@ -1,0 +1,41 @@
+
+
+
+tanks
+- all tanks
+
+
+TankGeometry object:
+defines geometry/structure
+cylindrical tank
+
+cylindrical_geometry = CylindricalTank(radius=0.1, 
+height=2.0, 
+spherical_caps=False)
+
+for custom weird things: 
+custom_geometry = TankGeometry(
+    geometry_dict={
+        (-1, 1): lambda x: 0.1*x**2,
+    }
+)
+The center of coordinate is always at the exact geometrical center of the tank.
+(-1, 1) - domain (tuple) – Tuple containing the lower and upper bounds of the domain where the radius is valid.
+0.1*x**2 - Function that defines the radius of the tank as a function of height.
+
+all in meters. spherical_caps are idealized basically.
+---------------------------------------------------------------------
+Fluid object:
+
+
+
+- MassFlowRateBasedTank
+- MassBassedTank
+
+
+less accurate, assume uniform gas distribution filling all the portion that is not occupied by liquid. 
+Therefore, these tanks can only model the tank state until the liquid runs out.
+
+- LevelBasedTank
+
+- UllageBasedTank
