@@ -40,7 +40,7 @@ OX_liquid = Fluid(name="Liquid Oxygen", density=1000)  #kg/m^3 somehwere near -1
 OX_vapour = Fluid(name="Vapour Oxygen", density=26)    #kg/m^3 somehwere near -100degC, somewhere near 10bara 
 
 KR_liquid = Fluid(name="Liquid Kerosene", density=800) #kg/m^3 range was given as 775/840 o.o
-AIR_vapour = Fluid(name="Air", density=10)              #kg/m^3 at 20C? bleh
+AIR_vapour = Fluid(name="Air", density=10)             #kg/m^3 at 20C? bleh
 
 #last i checked, the engine is eating at a constant m-dot, so mass flow tanks it will be
 
@@ -115,11 +115,12 @@ OXtank = MassFlowRateBasedTank(
     initial_gas_mass=OXtank_initial_gas,  #small ullage to avoid numerical issues
     liquid_mass_flow_rate_in=0,     #should be 0
     liquid_mass_flow_rate_out=OXmDot_engine,
-    gas_mass_flow_rate_in=OX_gasMdot,  #pressurant gas flows in to maintain pressure
-    gas_mass_flow_rate_out=0,    #well. none zero due to boil off. neglected 
-    discretize=100,              # i did not understand this
+    gas_mass_flow_rate_in=OX_gasMdot,   #pressurant gas flows in to maintain pressure
+    gas_mass_flow_rate_out=0,           #well. none zero due to boil off. neglected 
+    discretize=100,                     #i did not understand this
 )
-#print(KRtank_flameballtime)
+
+OXtank.info()
 
 """
 KRtank = MassFlowRateBasedTank(
